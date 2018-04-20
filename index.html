@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Wiki編集用</title>
-<style type="text/css"><!--
+<style><!--
 #inputs{
 	border-collapse: collapse;
 	border:solid 1px #333;
@@ -349,7 +349,7 @@ QQ.output.value = ET;
 <table id="inputs"><tbody>
 <tr>
 	<th colspan="2">基本情報</th>
-	<th colspan="2">特技</th>
+	<th colspan="2">特技(Lv1)</th>
 </tr>
 <tr>
 	<td>レアリティ</td><td><select name="Rarity" tabindex="1" onchange="ChangeParam(1)">
@@ -429,9 +429,8 @@ QQ.output.value = ET;
 	効果量：<input type="text" name="SkillPower" size="4" tabindex="17" onchange="ChangeParam(17)"></td>
 	<!-- tabindexの18は予約 -->
 </tr>
-</td></tr>
 
-<tr><th colspan="2">パラメータ(Lv1)</th></tr>
+<tr><th colspan="2">ステータス(Lv1)</th></tr>
 <tr><td>属性</td>
 	<td><select name="Attribute" tabindex="6" onchange="ChangeParam(6)">
 	<option>スマイル</option>
