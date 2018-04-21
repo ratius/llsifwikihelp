@@ -225,8 +225,9 @@ function OutputSkillText(br,op){
 	var str = "";
 	var strEnd = "";
 	
-	if(op){
-		if(QQ.SkillEffect.selectedIndex == 5 || QQ.SkillEffect.selectedIndex == 6 || QQ.SkillEffect.selectedIndex == 7){
+	if(QQ.SkillEffect.selectedIndex == 5 || QQ.SkillEffect.selectedIndex == 6 || QQ.SkillEffect.selectedIndex == 7){
+		str += ((br == "<br>") ? '<span style="font-size:10px">' : '');
+		if(op){
 			str += "&font(10px){";
 			strEnd = "}";
 		}
@@ -281,6 +282,9 @@ function OutputSkillText(br,op){
 			+ CSTable[QQ.CharName.selectedIndex][1] + "の属性Pが" + QQ.SkillPower.value + "%UPする";
 			break;
 	}
+	if(QQ.SkillEffect.selectedIndex == 5 || QQ.SkillEffect.selectedIndex == 6 || QQ.SkillEffect.selectedIndex == 7){
+		((br == "<br>") ? '</span>' : '')
+	}
 	return (str + strEnd);
 }
 
@@ -290,7 +294,9 @@ function OutputCenterSkillText(br,op){
 	var k = QQ.CSType.selectedIndex;
 	var str = "";
 	if(k>=3 && k - QQ.Attribute.selectedIndex != 3){ //◆基本効果
-		str += (op?"&font(10px){":"") + ["スマイル","ピュア","クール"][k-3] + "の12%分" + QQ.Attribute.value + "がUPする" + (op?"}":"");
+		str += ((br == "<br>") ? '<span style="font-size:10px">' : '') + (op?"&font(10px){":"")
+		+ ["スマイル","ピュア","クール"][k-3] + "Pの12%分" + QQ.Attribute.value + "PがUPする"
+		+ ((br == "<br>") ? '</span>' : '') + (op?"}":"");
 	}else {
 		str += QQ.Attribute.value + "Pが" + [3,6,7,9,9,9][k] + "%UPする";
 	}
@@ -348,8 +354,8 @@ QQ.output.value = ET;
 <form name="R">
 <table id="inputs"><tbody>
 <tr>
-	<th colspan="2">基本情報</th>
-	<th colspan="2">特技(Lv1)</th>
+	<th colspan="2" style="background-color:#bdf;">基本情報</th>
+	<th colspan="2" style="background-color:#bdf;">特技(Lv1)</th>
 </tr>
 <tr>
 	<td>レアリティ</td><td><select name="Rarity" tabindex="1" onchange="ChangeParam(1)">
@@ -420,7 +426,7 @@ QQ.output.value = ET;
 	</select></td>
 </tr>
 <tr>
-	<td>備考2</td>
+	<td>備考</td>
 	<td><input type="text" name="Desc2" size="20" tabindex="5" onchange="ChangeParam(5)" placeholder="追加日など"></td>
 	
 	<td rowspan="2">効果詳細</td>
@@ -430,7 +436,7 @@ QQ.output.value = ET;
 	<!-- tabindexの18は予約 -->
 </tr>
 
-<tr><th colspan="2">ステータス(Lv1)</th></tr>
+<tr><th colspan="2" style="background-color:#bdf;">ステータス(Lv1)</th></tr>
 <tr><td>属性</td>
 	<td><select name="Attribute" tabindex="6" onchange="ChangeParam(6)">
 	<option>スマイル</option>
@@ -438,7 +444,7 @@ QQ.output.value = ET;
 	<option>クール</option>
 	</select></td>
 	
-	<th colspan="2">センタースキル</th>
+	<th colspan="2" style="background-color:#bdf;">センタースキル</th>
 </tr>
 <tr>
 	<td>体力</td>
@@ -473,9 +479,9 @@ QQ.output.value = ET;
 </tr>
 </tbody></table>
 
-<table id="Preview">
+<table id="Preview" style="margin-top:20px;">
 <thead style="background-color:#ffc; text-align:center;">
-<tr><th colspan="11" style="background-color:#9cf; font-size:150%;">▼プレビュー▼</th></tr>
+<tr><th colspan="11" style="background-color:#bdf; font-size:150%;">▼プレビュー▼</th></tr>
 <tr>
 	<th rowspan="2">No.</th>
 	<th rowspan="2"></th>
@@ -495,7 +501,7 @@ QQ.output.value = ET;
 <tbody>
 <tr>
 	<td rowspan="3" id="PrvNumber"></td>
-	<td rowspan="3" style="text-align:center; width:40px;">(顔)</td>
+	<td rowspan="3" style="text-align:center; width:40px;"><img src="icon.png" alt="顔アイコン"></td>
 	<td rowspan="3">
 		<span id="PrvName">(カスタム)</span><span id="PrvDesc1"></span><span id="PrvDesc2" style="color:gray"></span>
 	</td>
@@ -528,7 +534,6 @@ QQ.output.value = ET;
 	<td id="PrvPureP3" style="text-align:center; color:green;">770</td>
 	<td id="PrvCoolP3" style="text-align:center; color:blue;">770</td>
 </tr>
-
 </tbody>
 </table>
 
@@ -538,10 +543,14 @@ QQ.output.value = ET;
 </div>
 </form>
 
-<p>
-※Nは部員により成長率が異なり、自動計算ができないため未対応です<br>
+<p style="line-height:150%; font-size:90%;">
+※N部員は個別に成長率が設定されており、自動計算ができないため出力できません<br>
 ※汎用特技は実装していません。お手数ですが特技欄を書き換えてください<br>
-※プレビュー画面では、説明が長ったらしい一部特技も、フォントを小さくせず表示しています（実装が面倒）。<br>
+</p>
+
+<p style="line-height:150%; font-size:90%;">
+2018/04/20 09:30頃　いわゆる「新センタースキル」のテキスト修正。「長ったらしい特技」のフォント縮小実装<br>
+2018/04/20 06:00頃　公開<br>
 </p>
 
 <ol>
