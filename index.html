@@ -81,12 +81,12 @@ var CSTable = [
 ["Aqours","3年生","Guilty Kiss"],
 ["Aqours","1年生","CYaRon!"    ] ];
 
-//■パラメータ変更時の処理
+//■パラメータ変更時、表を書き換える処理
 function ChangeParam(x){
 	var QQ = document.R;
 	switch(x){
-	case 1: //◆レアリティ
-	case 3: //◆キャラクター
+	case 'Rarity': //◆レアリティ
+	case 'CharName': //◆キャラクター
 		//メンバー指定かつSSR以上なら追加効果のオプションを追加
 		if(QQ.CharName.selectedIndex && QQ.Rarity.selectedIndex >= 2){
 			QQ.CSAddition.length = "4";
@@ -101,42 +101,42 @@ function ChangeParam(x){
 		}
 		break;
 
-	case 6: //◆属性
+	case 'Attribute': //◆属性
 		for(i=0; i<6; i++){
 			QQ.CSType.options[i].text
 			= QQ.Attribute.value + ["パワー","ハート","スター","プリンセス","エンジェル","エンプレス"][i];
 		}
 		break;
 		
-	case 15: //◆特技の効果
+	case 'SkillEffect': //◆特技の効果
 		var str = '<span style="color:#999">(設定項目なし)';
 
 		switch(QQ.SkillEffect.selectedIndex){
 			case 0: //SCOREアップ
-				str = '増加SCORE：<input type="text" name="SkillPower" size="4" tabindex="17" onchange="ChangeParam(17)">';
+				str = '増加SCORE：<input type="text" name="SkillPower" size="4" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">';
 				break;
 			case 1: //判定強化
 			case 6: //COMBO FEVER
 			case 7: //パラメータシンクロ
-				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(16)">秒\n'
+				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(' + "'SkillDuration'" + ')">秒\n'
 				break;
 			case 2: //体力回復
-				str = '回復量：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(17)">';
+				str = '回復量：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">';
 				break;
 			case 3: //特技発動率アップ
-				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(16)">秒<br>\n'
-				+ '倍率：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(17)">倍';
+				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(' + "'SkillDuration'" + ')">秒<br>\n'
+				+ '倍率：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">倍';
 				break;
 			case 5: //PERFECT SCOREアップ
-				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(16)">秒<br>\n'
-				+ '増加SCORE：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(17)">';
+				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(' + "'SkillDuration'" + ')">秒<br>\n'
+				+ '増加SCORE：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">';
 				break;
 			case 8: //特技レベルブースト
-				str = '増加レベル：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(17)">';
+				str = '増加レベル：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">';
 				break;
 			case 9: //パラメータアップ
-				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(16)">秒<br>\n'
-				+ '増加量：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(17)">%';
+				str = '持続時間：<input type="text" name="SkillDuration" size="2" tabindex="16" onchange="ChangeParam(' + "'SkillDuration'" + ')">秒<br>\n'
+				+ '増加量：<input type="text" name="SkillPower" size="2" tabindex="17" onchange="ChangeParam(' + "'SkillPower'" + ')">%';
 				break;
 			//特技リピートは設定項目なし
 		}
@@ -151,70 +151,72 @@ function UpdatePreview(x){
 	var Atrb = QQ.Attribute.selectedIndex;
 	var fix = [ ["","","<b>","",""], ["","","</b>","",""]];
 	switch(x){
-		case 1: //◆レアリティ
+		case 'Rarity': //◆レアリティ
 			document.getElementById("PrvLevel1").innerHTML = RarityTable[QQ.Rarity.selectedIndex][0];
 			document.getElementById("PrvLevel2").innerHTML = Number(RarityTable[QQ.Rarity.selectedIndex][0])+20;
-			UpdatePreview(7);
-			UpdatePreview(8);
-			UpdatePreview(9);
-			UpdatePreview(10);
-			UpdatePreview(20);
+			UpdatePreview('Stamina');
+			UpdatePreview('SmileP');
+			UpdatePreview('PureP');
+			UpdatePreview('CoolP');
+			UpdatePreview('CSAddition');
 			break;
-		case 2: //◆部員No.
+		case 'CharNum': //◆部員No.
 			document.getElementById("PrvNumber").innerHTML = QQ.CharNum.value;
 			break;
-		case 3: //◆キャラクター
-			document.getElementById("PrvName").innerHTML = QQ.CharName.value;
-			UpdatePreview(15);
-			UpdatePreview(20);
+		case 'CharName': //◆キャラクター
+		case 'CharCustomName': //◆キャラクター(カスタム)
+			document.getElementById("PrvName").innerHTML = 
+			(QQ.CharName.selectedIndex ? QQ.CharName.value : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"));
+			UpdatePreview('SkillEffect');
+			UpdatePreview('CSAddition');
 			break;
-		case 4: //◆セット等
+		case 'Desc1': //◆セット等
 			document.getElementById("PrvDesc1").innerHTML = (QQ.Desc1.value ? "<br>" + QQ.Desc1.value : "");
 			break;
-		case 5: //◆備考欄
+		case 'Desc2': //◆備考欄
 			document.getElementById("PrvDesc2").innerHTML = (QQ.Desc2.value ? "<br>" + QQ.Desc2.value : "");
 			break;
-		case 6: //◆属性
+		case 'Attribute': //◆属性
 			document.getElementById("PrvAttribute").innerHTML = QQ.Attribute.value;
 			document.getElementById("PrvAttribute").style.color = ["red","green","blue"][Atrb];
-			UpdatePreview(8);
-			UpdatePreview(9);
-			UpdatePreview(10);
+			UpdatePreview('SmileP');
+			UpdatePreview('PureP');
+			UpdatePreview('CoolP');
 			break;
-		case 7: //◆体力
+		case 'Stamina': //◆体力
 			document.getElementById("PrvStamina1").innerHTML = QQ.Stamina.value;
 			document.getElementById("PrvStamina2").innerHTML = QQ.Stamina.value;
 			document.getElementById("PrvStamina3").innerHTML = Number(QQ.Stamina.value)+1;
 			break;
-		case 8: //◆スマイルP
+		case 'SmileP': //◆スマイルP
 			document.getElementById("PrvSmileP1").innerHTML = fix[0][Atrb+2] + QQ.SmileP.value + fix[1][Atrb+2];
 			document.getElementById("PrvSmileP2").innerHTML = fix[0][Atrb+2] + (Number(QQ.SmileP.value) + RarityTable[QQ.Rarity.selectedIndex][1]) + fix[1][Atrb+2];
 			document.getElementById("PrvSmileP3").innerHTML = fix[0][Atrb+2] + (Number(QQ.SmileP.value) + RarityTable[QQ.Rarity.selectedIndex][2]) + fix[1][Atrb+2];
 			break;
-		case 9: //◆ピュアP
+		case 'PureP': //◆ピュアP
 			document.getElementById("PrvPureP1").innerHTML = fix[0][Atrb+1] + QQ.PureP.value + fix[1][Atrb+1];
 			document.getElementById("PrvPureP2").innerHTML = fix[0][Atrb+1] + (Number(QQ.PureP.value) + RarityTable[QQ.Rarity.selectedIndex][1]) + fix[1][Atrb+1];
 			document.getElementById("PrvPureP3").innerHTML = fix[0][Atrb+1] + (Number(QQ.PureP.value) + RarityTable[QQ.Rarity.selectedIndex][2]) + fix[1][Atrb+1];
 			break;
-		case 10: //◆クールP
+		case 'CoolP': //◆クールP
 			document.getElementById("PrvCoolP1").innerHTML = fix[0][Atrb] + QQ.CoolP.value + fix[1][Atrb];
 			document.getElementById("PrvCoolP2").innerHTML = fix[0][Atrb] + (Number(QQ.CoolP.value) + RarityTable[QQ.Rarity.selectedIndex][1]) + fix[1][Atrb];
 			document.getElementById("PrvCoolP3").innerHTML = fix[0][Atrb] + (Number(QQ.CoolP.value) + RarityTable[QQ.Rarity.selectedIndex][2]) + fix[1][Atrb];
 			break;
-		case 11: //◆特技名
+		case 'SkillName': //◆特技名
 			document.getElementById("PrvSkillName").innerHTML = QQ.SkillName.value;
 			break;
-		case 12: //◆発動条件
-		case 13: //◆発動個数
-		case 14: //◆発動率
-		case 15: //◆効果
-		case 16: //◆持続時間
-		case 17: //◆効果量
+		case 'SkillTrigger': //◆発動条件
+		case 'SkillTimes': //◆発動個数
+		case 'SkillChance': //◆発動率
+		case 'SkillEffect': //◆効果
+		case 'SkillDuration': //◆持続時間
+		case 'SkillPower': //◆効果量
 			document.getElementById("PrvSkillText").innerHTML = OutputSkillText("<br>",0);
 			break;
-		case 19: //◆CS名
+		case 'CSType': //◆CS名
 			document.getElementById("PrvCSName").innerHTML = QQ.CSType.value;
-		case 20: //◆CS追加効果
+		case 'CSAddition': //◆CS追加効果
 			document.getElementById("PrvCSText").innerHTML = OutputCenterSkillText("<br>",0);
 			break;
 	}
@@ -294,12 +296,12 @@ function OutputCenterSkillText(br,op){
 	var QQ = document.R;
 	var k = QQ.CSType.selectedIndex;
 	var str = "";
-	if(k>=3 && k - QQ.Attribute.selectedIndex != 3){ //◆基本効果
+	if(k>=4 && k - QQ.Attribute.selectedIndex != 4){ //◆基本効果
 		str += ((br == "<br>") ? '<span style="font-size:10px">' : '') + (op?"&font(10px){":"")
-		+ ["スマイル","ピュア","クール"][k-3] + "Pの12%分" + QQ.Attribute.value + "PがUPする"
+		+ ["スマイル","ピュア","クール"][k-4] + "Pの12%分" + QQ.Attribute.value + "PがUPする"
 		+ ((br == "<br>") ? '</span>' : '') + (op?"}":"");
 	}else {
-		str += QQ.Attribute.value + "Pが" + [3,6,7,9,9,9][k] + "%UPする";
+		str += QQ.Attribute.value + "Pが" + [3,4,6,7,9,9,9][k] + "%UPする";
 	}
 	if(QQ.CSAddition.selectedIndex){ //◆追加効果があるなら
 		str += br +"＋" + CSTable[QQ.CharName.selectedIndex][QQ.CSAddition.selectedIndex-1] + "のメンバーは" + br
@@ -312,17 +314,15 @@ function OutputCenterSkillText(br,op){
 function ExportToWiki(){
 var QQ = document.R;
 var Rarity = QQ.Rarity.selectedIndex;
-var CharNum = QQ.CharName.selectedIndex;
 var Stamina = Number(QQ.Stamina.value);
 var Atrb = QQ.Attribute.selectedIndex;
 var SmileP = Number(QQ.SmileP.value);
 var PureP = Number(QQ.PureP.value);
 var CoolP = Number(QQ.CoolP.value);
 
-
 var ET = "|>|>|>|>|>|>|>|>|>|>||\n|CENTER:" + QQ.CharNum.value
  //▼キャラクター名
- + "||" + QQ.CharName.value
+ + "||" + (QQ.CharName.selectedIndex? QQ.CharName.value : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"))
  + (QQ.Desc1.value?("&br()" + QQ.Desc1.value ) : "")
  + (QQ.Desc2.value?("&br()&color(gray){"+QQ.Desc2.value+"}"):"")
  + "|CENTER:&color(" + ["red","green","blue"][Atrb] + "){" + QQ.Attribute.value
@@ -348,6 +348,11 @@ var ET = "|>|>|>|>|>|>|>|>|>|>||\n|CENTER:" + QQ.CharNum.value
 QQ.output.value += ET;
 
 }
+
+function ClearOutputWindow(){
+	document.R.output.value = "";
+}
+
 --></script>
 </head>
 <body>
@@ -359,7 +364,7 @@ QQ.output.value += ET;
 	<th colspan="2" style="background-color:#bdf;">特技(Lv1)</th>
 </tr>
 <tr>
-	<td>レアリティ</td><td><select name="Rarity" tabindex="1" onchange="ChangeParam(1)">
+	<td>レアリティ</td><td><select name="Rarity" tabindex="1" onchange="ChangeParam('Rarity')">
 	<option selected>R</option>
 	<option>SR</option>
 	<option>SSR</option>
@@ -367,24 +372,24 @@ QQ.output.value += ET;
 	</select>
 	
 	<td>特技名</td>
-	<td><input type="text" name="SkillName" size="20" tabindex="11" onchange="ChangeParam(11)"></td>
+	<td><input type="text" name="SkillName" size="20" tabindex="12" onchange="ChangeParam('SkillName')"></td>
 </tr>
 <tr>
 	<td>部員No.</td>
-	<td><input type="text" name="CharNum" size="4" tabindex="2" onchange="ChangeParam(2)"></td>
+	<td><input type="text" name="CharNum" size="4" tabindex="2" onchange="ChangeParam('CharNum')"></td>
 	
 	<td>発動条件</td>
-	<td><select name="SkillTrigger" tabindex="12" onchange="ChangeParam(12)">
+	<td><select name="SkillTrigger" tabindex="13" onchange="ChangeParam('SkillTrigger')">
 	<option>リズムアイコン</option>
 	<option>コンボ</option>
 	<option>PERFECT</option>
 	<option>秒数</option>
 	</select>
-	<input type="text" name="SkillTimes" size="2" tabindex="13" onchange="ChangeParam(13)">ごとに</td>
+	<input type="text" name="SkillTimes" size="2" tabindex="14" onchange="ChangeParam('SkillTimes')">ごとに</td>
 </tr>
 <tr>
-	<td>キャラクター</td>
-	<td><select name="CharName" tabindex="3" onchange="ChangeParam(3)">
+	<td rowspan="2">キャラクター</td>
+	<td rowspan="2"><select name="CharName" tabindex="3" onchange="ChangeParam('CharName')">
 	<option selected>(カスタム)</option>
 	<option>高坂穂乃果</option>
 	<option>絢瀬絵里</option>
@@ -404,16 +409,17 @@ QQ.output.value += ET;
 	<option>国木田花丸</option>
 	<option>小原鞠莉</option>
 	<option>黒澤ルビィ</option>
-	</select></td>
+	</select><br>
+	<input type="text" name="CharCustomName" size="20" tabindex="4" onchange="ChangeParam('CharCustomName')" placeholder="「カスタム」選択時の名前">
+	</td>
 	
 	<td>発動率</td>
-	<td><input type="text" name="SkillChance" size="2" tabindex="14" onchange="ChangeParam(14)">%の確率で</td>
-<tr>
-	<td>セット等</td>
-	<td><input type="text" name="Desc1" size="20" tabindex="4" onchange="ChangeParam(4)" placeholder="必要に応じて括弧を付与"></td>
+	<td><input type="text" name="SkillChance" size="2" tabindex="15" onchange="ChangeParam('SkillChance')">%の確率で</td>
+</tr>
 
+<tr>
 	<td>効果</td>
-	<td><select name="SkillEffect" tabindex="15" onChange="ChangeParam(15)">
+	<td><select name="SkillEffect" tabindex="16" onChange="ChangeParam('SkillEffect')">
 	<option>SCOREアップ</option>
 	<option>判定強化</option>
 	<option>体力回復</option>
@@ -426,34 +432,37 @@ QQ.output.value += ET;
 	<option>パラメータアップ</option>
 	</select></td>
 </tr>
+
 <tr>
-	<td>備考</td>
-	<td><input type="text" name="Desc2" size="20" tabindex="5" onchange="ChangeParam(5)" placeholder="追加日など"></td>
-	
+	<td>セット等</td>
+	<td><input type="text" name="Desc1" size="20" tabindex="5" onchange="ChangeParam('Desc1')" placeholder="必要に応じて括弧を付与"></td>
+
 	<td rowspan="2">効果詳細</td>
 	<td rowspan="2" id="TargetCell">
-	<input type="hidden" name="SkillDuration" tabindex="16" onchange="ChangeParam(16)">
-	効果量：<input type="text" name="SkillPower" size="4" tabindex="17" onchange="ChangeParam(17)"></td>
-	<!-- tabindexの18は予約 -->
+	<input type="hidden" name="SkillDuration" tabindex="17" onchange="ChangeParam('SkillDuration')">
+	効果量：<input type="text" name="SkillPower" size="4" tabindex="18" onchange="ChangeParam('SkillPower')"></td>
+</tr>
+<tr>
+	<td>備考</td>
+	<td><input type="text" name="Desc2" size="20" tabindex="6" onchange="ChangeParam('Desc2')" placeholder="追加日など"></td>
+	
 </tr>
 
-<tr><th colspan="2" style="background-color:#bdf;">ステータス(Lv1)</th></tr>
+<tr>
+	<th colspan="2" style="background-color:#bdf;">ステータス(Lv1)</th>
+	<th colspan="2" style="background-color:#bdf;">センタースキル</th>
+</tr>
 <tr><td>属性</td>
-	<td><select name="Attribute" tabindex="6" onchange="ChangeParam(6)">
+	<td><select name="Attribute" tabindex="7" onchange="ChangeParam('Attribute')">
 	<option>スマイル</option>
 	<option>ピュア</option>
 	<option>クール</option>
 	</select></td>
 	
-	<th colspan="2" style="background-color:#bdf;">センタースキル</th>
-</tr>
-<tr>
-	<td>体力</td>
-	<td><input type="text" name="Stamina" size="2" value="0" tabindex="7" onchange="ChangeParam(7)"></td>
-
-	<td colspan="2" rowspan="4">
-	<select name="CSType" size="6" tabindex="19" onchange="ChangeParam(19)" style="width:140px">
+	<td colspan="2" rowspan="5">
+	<select name="CSType" size="7" tabindex="19" onchange="ChangeParam('CSType')" style="width:140px">
 	<option selected>スマイルパワー</option>
+	<option>スマイルエナジー</option>
 	<option>スマイルハート</option>
 	<option>スマイルスター</option>
 	<option>スマイルプリンセス</option>
@@ -461,22 +470,27 @@ QQ.output.value += ET;
 	<option>スマイルエンプレス</option>
 	</select>
 	
-	<select name="CSAddition" size="6" tabindex="20" onchange="ChangeParam(20)" style="width:140px">
+	<select name="CSAddition" size="7" tabindex="20" onchange="ChangeParam(20)" style="width:140px">
 	<option selected>追加効果なし</option>
 	</select>
 	</td>
 </tr>
 <tr>
+	<td>体力</td>
+	<td><input type="text" name="Stamina" size="2" value="0" tabindex="8" onchange="ChangeParam('Stamina')"></td>
+
+</tr>
+<tr>
 	<td>スマイルP</td>
-	<td><input type="text" name="SmileP" size="4" value="0" tabindex="8" onchange="ChangeParam(8)"></td>
+	<td><input type="text" name="SmileP" size="4" value="0" tabindex="9" onchange="ChangeParam('SmileP')"></td>
 </tr>
 <tr>
 	<td>ピュアP</td>
-	<td><input type="text" name="PureP" size="4" value="0" tabindex="9" onchange="ChangeParam(9)"></td>
+	<td><input type="text" name="PureP" size="4" value="0" tabindex="10" onchange="ChangeParam('PureP')"></td>
 </tr>
 <tr>
 	<td>クールP</td>
-	<td><input type="text" name="CoolP" size="4" value="0" tabindex="10" onchange="ChangeParam(10)"></td>
+	<td><input type="text" name="CoolP" size="4" value="0" tabindex="11" onchange="ChangeParam('CoolP')"></td>
 </tr>
 </tbody></table>
 
@@ -539,7 +553,8 @@ QQ.output.value += ET;
 </table>
 
 <div>
-	<input type="button" onClick="ExportToWiki()" style="width:120px; height:40px; margin:5px;" value="表組を出力"><br>
+	<input type="button" onClick="ExportToWiki()" style="width:120px; height:40px; margin:5px;" value="表組を出力">
+	<input type="button" onClick="ClearOutputWindow()" style="width:120px; height:40px; margin:5px;" value="下欄削除"><br>
 	<textarea rows="12" cols="80" name="output" style="margin:auto 5px" placeholder="ここに表組が出力されます"></textarea>
 </div>
 </form>
@@ -550,6 +565,7 @@ QQ.output.value += ET;
 </p>
 
 <p style="line-height:150%; font-size:90%;">
+2018/05/20 18:00頃　キャラクター名入力欄追加。新センタースキル追加。SSRのセンタースキル追加効果を選べなかったのを修正<br>
 2018/04/20 09:30頃　いわゆる「新センタースキル」のテキスト修正。「長ったらしい特技」のフォント縮小実装<br>
 2018/04/20 06:00頃　公開<br>
 </p>
