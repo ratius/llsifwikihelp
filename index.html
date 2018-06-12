@@ -50,6 +50,22 @@
 	vertical-align: inherit;
 }
 
+#History {
+}
+
+#History td{
+	padding: 2px 4px;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: solid 2px #bbb;
+}
+
+#History img{
+	vertical-align: text-bottom;
+}
+
+
 --></style>
 <script><!--
 
@@ -81,6 +97,22 @@ var CSTable = [
 ["Aqours","3年生","Guilty Kiss"],
 ["Aqours","1年生","CYaRon!"    ] ];
 
+//■汎用特技リスト
+var CommonSkillName = [
+ ["トータル"    ,"チャーム"]
+,["リズミカル"  ,"チャーム"]
+,["パーフェクト","チャーム"]
+,["タイマー"    ,"チャーム"]
+,["トータル"    ,"トリック"]
+,["リズミカル"  ,"トリック"]
+,["パーフェクト","トリック"]
+,["タイマー"    ,"トリック"]
+,["トータル"    ,"エール"]
+,["リズミカル"  ,"エール"]
+,["パーフェクト","エール"]
+,["タイマー"    ,"エール"]
+];
+
 //■パラメータ変更時、表を書き換える処理
 function ChangeParam(x){
 	var QQ = document.R;
@@ -102,9 +134,9 @@ function ChangeParam(x){
 		break;
 
 	case 'Attribute': //◆属性
-		for(i=0; i<6; i++){
+		for(i=0; i<7; i++){
 			QQ.CSType.options[i].text
-			= QQ.Attribute.value + ["パワー","ハート","スター","プリンセス","エンジェル","エンプレス"][i];
+			= QQ.Attribute.value + ["パワー","エナジー","ハート","スター","プリンセス","エンジェル","エンプレス"][i];
 		}
 		break;
 		
@@ -166,7 +198,7 @@ function UpdatePreview(x){
 		case 'CharName': //◆キャラクター
 		case 'CharCustomName': //◆キャラクター(カスタム)
 			document.getElementById("PrvName").innerHTML = 
-			(QQ.CharName.selectedIndex ? QQ.CharName.value : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"));
+			(QQ.CharName.selectedIndex ? QQ.CharName.value.substring(4) : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"));
 			UpdatePreview('SkillEffect');
 			UpdatePreview('CSAddition');
 			break;
@@ -182,6 +214,8 @@ function UpdatePreview(x){
 			UpdatePreview('SmileP');
 			UpdatePreview('PureP');
 			UpdatePreview('CoolP');
+			UpdatePreview('CSType');
+			UpdatePreview('CSAddition');
 			break;
 		case 'Stamina': //◆体力
 			document.getElementById("PrvStamina1").innerHTML = QQ.Stamina.value;
@@ -204,15 +238,13 @@ function UpdatePreview(x){
 			document.getElementById("PrvCoolP3").innerHTML = fix[0][Atrb] + (Number(QQ.CoolP.value) + RarityTable[QQ.Rarity.selectedIndex][2]) + fix[1][Atrb];
 			break;
 		case 'SkillName': //◆特技名
-			document.getElementById("PrvSkillName").innerHTML = QQ.SkillName.value;
-			break;
 		case 'SkillTrigger': //◆発動条件
 		case 'SkillTimes': //◆発動個数
 		case 'SkillChance': //◆発動率
 		case 'SkillEffect': //◆効果
 		case 'SkillDuration': //◆持続時間
 		case 'SkillPower': //◆効果量
-			document.getElementById("PrvSkillText").innerHTML = OutputSkillText("<br>",0);
+			document.getElementById("PrvSkillText").innerHTML = OutputSkillText("<b>","</b>","<br>",0);
 			break;
 		case 'CSType': //◆CS名
 			document.getElementById("PrvCSName").innerHTML = QQ.CSType.value;
@@ -223,17 +255,22 @@ function UpdatePreview(x){
 }
 
 //■ 特技テキストを取得
-function OutputSkillText(br,op){
+function OutputSkillText(b1,b2,br,op){
 	var QQ = document.R;
 	var str = "";
 	var strEnd = "";
+	var SkillValue = GetCommonSkillID();
+	
+	if(SkillValue >= 0){ //◆汎用特技なら、効果テキストを表示せず終了
+		return (CommonSkillName[SkillValue][0] + br + CommonSkillName[SkillValue][1]);
+	}
+	
+	str += (b1 + QQ.SkillName.value + b2 + br);
 	
 	if(QQ.SkillEffect.selectedIndex == 5 || QQ.SkillEffect.selectedIndex == 6 || QQ.SkillEffect.selectedIndex == 7){
-		str += ((br == "<br>") ? '<span style="font-size:10px">' : '');
-		if(op){
-			str += "&font(10px){";
-			strEnd = "}";
-		}
+		//◆一部特技の
+		str += (op ? '&font(10px){' : '<span style="font-size:10px">');
+		strEnd = (op ? '}' : '</span>');
 	}	
 	switch(QQ.SkillTrigger.selectedIndex){
 		case(0): //◆リズムアイコン
@@ -285,10 +322,18 @@ function OutputSkillText(br,op){
 			+ CSTable[QQ.CharName.selectedIndex][1] + "の属性Pが" + QQ.SkillPower.value + "%UPする";
 			break;
 	}
-	if(QQ.SkillEffect.selectedIndex == 5 || QQ.SkillEffect.selectedIndex == 6 || QQ.SkillEffect.selectedIndex == 7){
-		((br == "<br>") ? '</span>' : '')
-	}
 	return (str + strEnd);
+}
+
+//■ 特技名が汎用特技かどうかの判定
+//   汎用特技なら0以上、そうでないなら-1
+function GetCommonSkillID(){
+	for(i=0; i<CommonSkillName.length; i++){
+		if(document.R.SkillName.value == (CommonSkillName[i][0] + CommonSkillName[i][1]) ){
+			return i;
+		}
+	}
+	return -1;
 }
 
 //■ センタースキル用テキストを取得
@@ -322,7 +367,7 @@ var CoolP = Number(QQ.CoolP.value);
 
 var ET = "|>|>|>|>|>|>|>|>|>|>||\n|CENTER:" + QQ.CharNum.value
  //▼キャラクター名
- + "||" + (QQ.CharName.selectedIndex? QQ.CharName.value : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"))
+ + "||" + (QQ.CharName.selectedIndex? QQ.CharName.value.substring(4) : (QQ.CharCustomName.value? QQ.CharCustomName.value : "(カスタム)"))
  + (QQ.Desc1.value?("&br()" + QQ.Desc1.value ) : "")
  + (QQ.Desc2.value?("&br()&color(gray){"+QQ.Desc2.value+"}"):"")
  + "|CENTER:&color(" + ["red","green","blue"][Atrb] + "){" + QQ.Attribute.value
@@ -332,7 +377,7 @@ var ET = "|>|>|>|>|>|>|>|>|>|>||\n|CENTER:" + QQ.CharNum.value
  + "|CENTER:COLOR(green):" + ((Atrb==1)?"''":"") + PureP  + ((Atrb==1)?"''":"")
  + "|CENTER:COLOR(blue):" + ((Atrb==2)?"''":"") + CoolP  + ((Atrb==2)?"''":"")
  //▼特技
- + "|CENTER:" + "&b(){" + QQ.SkillName.value + "}&br()" + OutputSkillText('&br()',1)
+ + "|CENTER:" + OutputSkillText("''","''","&br()",1)
  //▼センタースキル
  + "|CENTER:" + "&b(){" + QQ.CSType.value + "}&br()" + OutputCenterSkillText('&br()',1) + "|\n"
  //▼2行目以降
@@ -391,24 +436,24 @@ function ClearOutputWindow(){
 	<td rowspan="2">キャラクター</td>
 	<td rowspan="2"><select name="CharName" tabindex="3" onchange="ChangeParam('CharName')">
 	<option selected>(カスタム)</option>
-	<option>高坂穂乃果</option>
-	<option>絢瀬絵里</option>
-	<option>南ことり</option>
-	<option>園田海未</option>
-	<option>星空凛</option>
-	<option>西木野真姫</option>
-	<option>東條希</option>
-	<option>小泉花陽</option>
-	<option>矢澤にこ</option>
-	<option>高海千歌</option>
-	<option>桜内梨子</option>
-	<option>松浦果南</option>
-	<option>黒澤ダイヤ</option>
-	<option>渡辺曜</option>
-	<option>津島善子</option>
-	<option>国木田花丸</option>
-	<option>小原鞠莉</option>
-	<option>黒澤ルビィ</option>
+	<option>01. 高坂穂乃果</option>
+	<option>02. 絢瀬絵里</option>
+	<option>03. 南ことり</option>
+	<option>04. 園田海未</option>
+	<option>05. 星空凛</option>
+	<option>06. 西木野真姫</option>
+	<option>07. 東條希</option>
+	<option>08. 小泉花陽</option>
+	<option>09. 矢澤にこ</option>
+	<option>11. 高海千歌</option>
+	<option>12. 桜内梨子</option>
+	<option>13. 松浦果南</option>
+	<option>14. 黒澤ダイヤ</option>
+	<option>15. 渡辺曜</option>
+	<option>16. 津島善子</option>
+	<option>17. 国木田花丸</option>
+	<option>18. 小原鞠莉</option>
+	<option>19. 黒澤ルビィ</option>
 	</select><br>
 	<input type="text" name="CharCustomName" size="20" tabindex="4" onchange="ChangeParam('CharCustomName')" placeholder="「カスタム」選択時の名前">
 	</td>
@@ -470,7 +515,7 @@ function ClearOutputWindow(){
 	<option>スマイルエンプレス</option>
 	</select>
 	
-	<select name="CSAddition" size="7" tabindex="20" onchange="ChangeParam(20)" style="width:140px">
+	<select name="CSAddition" size="7" tabindex="20" onchange="ChangeParam('CSAddition')" style="width:140px">
 	<option selected>追加効果なし</option>
 	</select>
 	</td>
@@ -527,8 +572,7 @@ function ClearOutputWindow(){
 	<td id="PrvPureP1" style="text-align:center; color:green;">0</td>
 	<td id="PrvCoolP1" style="text-align:center; color:blue;">0</td>
 	<td rowspan="3" style="text-align:center;">
-		<b id="PrvSkillName"></b><br>
-		<span id="PrvSkillText">リズムアイコン個ごとに<br>%の確率で<br>スコアが増える</span>
+		<span id="PrvSkillText"><br>リズムアイコン個ごとに<br>%の確率で<br>スコアが増える</span>
 	</td>
 	<td rowspan="3" style="text-align:center;">
 		<b id="PrvCSName">スマイルパワー</b><br>
@@ -560,16 +604,34 @@ function ClearOutputWindow(){
 </form>
 
 <p style="line-height:150%; font-size:90%;">
+※スキル欄に汎用特技名（例：トータルチャーム）を入力すると、汎用特技のレイアウトでの表示・出力ができます<br>
 ※N部員は個別に成長率が設定されており、自動計算ができないため出力できません<br>
-※汎用特技は実装していません。お手数ですが特技欄を書き換えてください<br>
 </p>
 
-<p style="line-height:150%; font-size:90%;">
-2018/05/20 18:00頃　キャラクター名入力欄追加。新センタースキル追加。SSRのセンタースキル追加効果を選べなかったのを修正<br>
-2018/04/20 09:30頃　いわゆる「新センタースキル」のテキスト修正。「長ったらしい特技」のフォント縮小実装<br>
-2018/04/20 06:00頃　公開<br>
-</p>
+<table id="History" style="line-height:150%; font-size:90%; border-collapse:collapse">
+<thead><tr><th colspan="2" style="background-color:#bdf; font-size:large;">■更新履歴</th></tr></thead>
+<tbody>
+<tr>
+	<td>2018/06/12 15:00頃</td>
+	<td><img src="New.png" width="24" height="16"> 汎用特技の表示・出力に対応<br>
+		<img src="Fix.png" width="24" height="16"> センタースキル変更時、プレビューが更新されなかったのを修正</td>
+</tr>
+<tr>
+	<td>2018/05/20 18:00頃</td>
+	<td><img src="New.png" width="24" height="16"> キャラクター名入力欄追加<br>
+		<img src="New.png" width="24" height="16"> 新センタースキル（○○エナジー）追加<br>
+		<img src="Fix.png" width="24" height="16"> レアリティ「SSR」選択時、センタースキルの追加効果を選べなかったのを修正</td>
+</tr>
+<tr>
+	<td>2018/04/20 09:30頃</td>
+	<td><img src="New.png" width="24" height="16"> 「長ったらしい特技」のフォント縮小実装<br>
+		<img src="Fix.png" width="24" height="16"> 一部センタースキルのテキスト修正</td>
+</tr>
+<tr>
+	<td>2018/04/20 06:00頃</td>
+	<td>公開</td>
+</tr>
+</tbody>
+</table>
 
-<ol>
-</ol>
 </html>
